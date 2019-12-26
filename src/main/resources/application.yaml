@@ -1,0 +1,101 @@
+server:
+  port: 7066
+  session:
+    timeout: 1800
+spring:
+  mvc:
+    throw-exception-if-no-handler-found: true
+  resources:
+    add-mappings: true
+  jackson:
+    date-format: yyyy.MM.dd HH:mm
+    time-zone: "GMT+8"
+  datasource:
+    #    username: root
+    #    password: ljkroot
+    #    url: jdbc:mysql://localhost:3306/vive?useUnicode=false&characterEncoding=UTF-8
+    #    driver-class-name: org.mariadb.jdbc.Driver
+    username: back_dev
+    password: Vivedu123!@#
+    #    url: jdbc:mysql://rm-2zenq2aelig11p0u0o.mysql.rds.aliyuncs.com:3306/vivecloud_dev
+    url: jdbc:mysql://10.127.94.139:3306/xrcloud_test?useTimezone=true&serverTimezone=GMT%2B8&useUnicode=false&characterEncoding=UTF-8
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    #监控统计拦截的filters
+    filters: stat,wall
+    #druid配置
+    #配置初始化大小/最小/最大
+    initialSize: 5
+    minIdle: 5
+    maxActive: 20
+    #获取连接等待超时时间
+    maxWait: 60000
+    #间隔多久进行一次检测，检测需要关闭的空闲连接
+    timeBetweenEvictionRunsMillis: 60000
+    #一个连接在池中最小生存的时间
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: SELECT 1 FROM DUAL
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    #打开PSCache，并指定每个连接上PSCache的大小。oracle设为true，mysql设为false。分库分表较多推荐设置为false
+    poolPreparedStatements: false
+    maxPoolPreparedStatementPerConnectionSize: 20
+    # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
+    connectionProperties:
+      druid:
+        stat:
+          mergeSql: true
+          slowSqlMillis: 5000
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: -1
+      max-request-size: -1
+mybatis:
+  mapper-locations: classpath*:mappers/*.xml
+  type-aliases-package: com.vivedu.cloud.dao
+  configuration:
+    map-underscore-to-camel-case: true
+
+#TODO 参数名称与Aliyun严格对齐   待修改
+aliyun:
+  oss:
+    accessId: LTAIRKfO8JesqaEz
+    accessKey: kkPGZ1PQLIsyjij8979PP6ht0A6A3s
+    bucket: vivecloud
+    endpoint: http://oss-cn-beijing.aliyuncs.com
+    fEndpoint: oss-cn-beijing.aliyuncs.com
+    callbackUrl: http://47.94.162.61:7066/api/VerifyOSSCallbackRequest
+
+#filePath: D:\work
+filePath: /opt/viveducloud/test
+
+#pptUtl
+serverPptUrl: http://192.168.12.45:7066/api/clientDownload?url=
+
+#downLoadTem: D:\work
+downLoadTem: /opt/viveducloud/test
+
+#migu data
+migu.account: xy980135364
+migu.password: xxy980135364
+migu.uid: 3861
+migu.secretId: 502847822e8ed2db20de4028594bb57a
+migu.secretKey: 1daccd20605738430d0c661bde7fe2af
+
+hdfs:
+  path: hdfs://10.127.94.140:9000
+  username: root
+
+fastdfs:
+  tracker_http_host: 112.19.241.225
+
+tempWorkBasePath: /opt/xr-viveducloud/test/tmp
+
+# 视博云后台服务地址（tls url），用于和视博云后台通信
+serverUrl: http://192.168.4.11:4567
+#配置定时任务开关 开：true/关：false
+scheduling:
+  asyncAddVRCloudapp:
+    enabled: false
