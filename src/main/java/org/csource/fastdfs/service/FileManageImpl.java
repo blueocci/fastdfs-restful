@@ -16,81 +16,11 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * 文件上传服务层
- */
 @Service
 public class FileManageImpl {
 
-    @Value("${tempWorkBasePath}")
-    private String tempWorkPath;
-
     @Autowired
     FastDFSClient fastDFSClient;
-
-    /**
-     * 生成文件路径
-     *
-     * @param fileName
-     * @return filePath
-     */
-    public String generateDirectory(String fileName) {
-        fileName = StringSimpleUtils.handleFileName(fileName);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        SimpleDateFormat sdfHour = new SimpleDateFormat("HH");
-        Date date = new Date();
-        String ImagReg = "^\\S+\\.gif|\\.GIF|\\.PNG|\\.png|\\.jpg|\\.JPG|\\.JPEG|\\.jpeg|\\.ppt|\\.pptx$";
-        String apkReg = "^\\S+\\.apk$";
-        String pptReg = "^\\S+\\.ppt|\\.pptx$";
-        String videoReg = "^\\S+\\.mp4$";
-        String classroomKey = "";
-        boolean ImagMatcher = Pattern.compile(ImagReg).matcher(fileName).find();
-        boolean apkMatcher = Pattern.compile(apkReg).matcher(fileName).find();
-        boolean pptMatcher = Pattern.compile(pptReg).matcher(fileName).find();
-        boolean videoMatcher = Pattern.compile(videoReg).matcher(fileName).find();
-        if (StringUtils.isNotEmpty(fileName) && apkMatcher) {
-            classroomKey = "apk";
-        } else if (StringUtils.isNotEmpty(fileName) && pptMatcher) {
-            classroomKey = "ppt";
-        } else if (StringUtils.isNotEmpty(fileName) && ImagMatcher) {
-            classroomKey = "image";
-        } else if (StringUtils.isNotEmpty(fileName) && videoMatcher) {
-            classroomKey = "video";
-        } else {
-            classroomKey = "other";
-        }
-        String key = File.separator + classroomKey + File.separator + sdf.format(date) + File.separator + sdfHour.format(date) + File.separator + fileName;
-        return key;
-    }
-
-    public String getFileType(String fileName) {
-        if (StringUtils.isNotEmpty(fileName) && fileName.contains(".")) {
-            String suffix = fileName.substring(fileName.lastIndexOf(".") + 1);
-            return suffix;
-        }
-        return "default";
-    }
-
-    public String getFileContentType(String fileSuffix) {
-        //不同后缀对应的文件类型
-        Map<String, String> typeMap = new HashMap<>();
-        typeMap.put("pptx", "appication/powerpoint;charset=utf-8");
-        typeMap.put("ppt", "appication/powerpoint;charset=utf-8");
-        typeMap.put("mp4", "video/mpeg4;charset=utf-8");
-        typeMap.put("png", "application/x-png;charset=utf-8");
-        typeMap.put("PNG", "application/x-png;charset=utf-8");
-        typeMap.put("jpg", "application/x-png;charset=utf-8");
-        typeMap.put("JPG", "application/x-png;charset=utf-8");
-        typeMap.put("jpeg", "application/x-png;charset=utf-8");
-        typeMap.put("JPEG", "application/x-png;charset=utf-8");
-        typeMap.put("apk", "application/vnd.android.package-archive;charset=utf-8");
-        String objectPath = typeMap.get(fileSuffix);
-        if (objectPath == null || "".equals(objectPath)) {
-            return "application/octet-stream;charset=utf-8";
-        }
-        return objectPath;
-    }
-
 
     public String saveFile(MultipartFile multipartFile) throws IOException {
         String[] fileAbsolutePath = {};
@@ -118,7 +48,7 @@ public class FileManageImpl {
         return path;
     }
 
-    public static String[] extractGroupNameAndFileName(String url) throws Exception {
+    private static String[] extractGroupNameAndFileName(String url) throws Exception {
         String[] ret = {"",""};
         Pattern p = Pattern.compile("http://[^/]+/([^/]+)/(.*)");
         Matcher m = p.matcher(url);

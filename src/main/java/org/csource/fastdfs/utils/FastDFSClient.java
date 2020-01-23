@@ -1,43 +1,30 @@
 package org.csource.fastdfs.utils;
 
-import org.csource.fastdfs.model.FastDFSFile;
 import lombok.extern.slf4j.Slf4j;
 import org.csource.common.NameValuePair;
 import org.csource.fastdfs.*;
-import org.springframework.beans.factory.annotation.Value;
+import org.csource.fastdfs.config.FastDFSConfig;
+import org.csource.fastdfs.model.FastDFSFile;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-
-/**
- * FastDFS工具类【实现文件上传、下载、删除、查询】
- *
- * @author wangjunchang
- */
 @Component
 @Slf4j
 public class FastDFSClient {
 
-    @Value("${fastdfs.tracker_http_host}")
-    private String httpHost;
-
-    static {
-        try {
-//            String filePath = new ClassPathResource("fdfs_client.conf").getFile().getAbsolutePath();
-            ClientGlobal.init("/opt/fdfs_client.conf");
-        } catch (Exception e) {
-            log.error("FastDFS Client Init Fail!", e);
-        }
-    }
+    @Autowired
+    private FastDFSConfig config;
 
     public String[] upload(FastDFSFile file) {
         log.info("File Name: " + file.getName() + "File Length:" + file.getContent().length);
 
         NameValuePair[] meta_list = new NameValuePair[1];
         meta_list[0] = new NameValuePair("author", file.getAuthor());
+        meta_list[1] = new NameValuePair("filename", file.getName());
 
         long startTime = System.currentTimeMillis();
         String[] uploadResults = null;
@@ -95,23 +82,22 @@ public class FastDFSClient {
         log.info("delete file successfully!!!" + i);
     }
 
-    public StorageServer[] getStoreStorages(String groupName)
+    public String getTrackerUrl() throws IOException {
+        return "http://" + config.getHttpHost() + ":" + ClientGlobal.getG_tracker_http_port() + "/";
+    }
+
+    private StorageServer[] getStoreStorages(String groupName)
             throws IOException {
         TrackerClient trackerClient = new TrackerClient();
         TrackerServer trackerServer = trackerClient.getConnection();
         return trackerClient.getStoreStorages(trackerServer, groupName);
     }
 
-    public ServerInfo[] getFetchStorages(String groupName,
-                                                String remoteFileName) throws IOException {
+    private ServerInfo[] getFetchStorages(String groupName,
+                                          String remoteFileName) throws IOException {
         TrackerClient trackerClient = new TrackerClient();
         TrackerServer trackerServer = trackerClient.getConnection();
         return trackerClient.getFetchStorages(trackerServer, groupName, remoteFileName);
-    }
-
-    public String getTrackerUrl() throws IOException {
-        //return "http://" + getTrackerServer().getInetSocketAddress().getHostString() + ":" + ClientGlobal.getG_tracker_http_port() + "/";
-        return "http://" + httpHost + ":" + ClientGlobal.getG_tracker_http_port() + "/";
     }
 
     private StorageClient getStorageClient() throws IOException {

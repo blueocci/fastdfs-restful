@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
@@ -29,13 +30,12 @@ public class UploadFileController {
 
     private FileManageImpl fileManage;
 
+    private MessageSource messages;
+
     @Autowired
     public void setFileManage(FileManageImpl fileManage) {
         this.fileManage = fileManage;
     }
-
-    @Autowired
-    private Environment environment;
 
     @ApiOperation(value = "ppt上传", notes = "ppt上传")
     @RequestMapping(path = "/upload", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

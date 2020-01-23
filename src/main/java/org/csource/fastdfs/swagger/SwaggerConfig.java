@@ -14,13 +14,8 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @Configuration
 @EnableSwagger2
 public class SwaggerConfig {
-    /**
-     * 创建一个Docket对象
-     * 调用select()方法，
-     * 生成ApiSelectorBuilder对象实例，该对象负责定义外漏的API入口
-     * 通过使用RequestHandlerSelectors和PathSelectors来提供Predicate，在此我们使用any()方法，将所有API都通过Swagger进行文档管理
-     * 本地测试Swagger UI 访问路径 http://localhost:6066/swagger-ui.html
-     */
+
+
     @Bean
     public Docket createRestApi() {
         return new Docket(DocumentationType.SWAGGER_2)

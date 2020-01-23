@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Data
 public class FastDFSFile {
     private String name;
-    private byte[] Content;
+    private byte[] content;
     private String ext;
     private String author;
 }
