@@ -11,7 +11,7 @@ pipeline {
             steps {
                 dir('fastdfs-client-java') {
                     checkout([$class: 'GitSCM', branches: [[name: 'refs/tags/V1.27']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/happyfish100/fastdfs-client-java.git']]])
-                    sh "mvn -Dmaven.test.failure.ignore=true clean package"
+                    sh "mvn -Dmaven.test.failure.ignore=true clean install"
                 }
                 dir('fastdfs-restful') {
                     git 'https://github.com/blueocci/fastdfs-restful'
